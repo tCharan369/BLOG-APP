@@ -1,94 +1,105 @@
-import { useState, useEffect } from 'react'
-import axios from 'axios'
-import {useNavigate} from 'react-router-dom'
-import {useAuth} from '@clerk/clerk-react'
-
+import { useState, useEffect } from 'react';
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from '@clerk/clerk-react';
+import { FaSearch } from "react-icons/fa";
 
 function Articles() {
+  const [articles, setArticles] = useState([]);
+  const [error, setError] = useState('');
+  const navigate = useNavigate();
+  const { getToken } = useAuth();
+  const [filter, setFilter] = useState('');
 
-  const [articles, setArticles] = useState([])
-  const [error, setError] = useState('')
-  const navigate=useNavigate()
-  const {getToken}=useAuth();
-
-  //get all articles
+  // Fetch articles
   async function getArticles() {
-    //get jwt token
-    const token=await getToken()
-    //make authenticated req
-    let res = await axios.get('http://localhost:3000/author-api/articles',{
-      headers:{
-        Authorization:`Bearer ${token}`
+    try {
+      const token = await getToken();
+      const res = await axios.get('http://localhost:3000/author-api/articles', {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      if (res.data.message === 'articles') {
+        setArticles(res.data.payload);
+        setError('');
+      } else {
+        setError(res.data.message);
       }
-    })
-    if (res.data.message === 'articles') {
-      setArticles(res.data.payload)
-      setError('')
-    } else {
-      setError(res.data.message)
+    } catch (err) {
+      setError('Failed to fetch articles. Please try again.');
     }
   }
-  console.log(error)
-
-  //goto specific article
-  function gotoArticleById(articleObj){
-      navigate(`../${articleObj.articleId}`,{ state:articleObj})
-  }
-
 
   useEffect(() => {
-    getArticles()
-  }, [])
+    getArticles();
+  }, []);
 
-  console.log(articles)
+  const handleFilterChange = (e) => {
+    setFilter(e.target.value);
+  };
+
+  const filteredArticles = articles.filter(
+    (article) =>
+      article.isArticleActive &&
+      article.title.toLowerCase().includes(filter.toLowerCase())
+  );
 
   return (
     <div className='container'>
-      <div>
-      {error.length!==0&&<p className='display-4 text-center mt-5 text-danger'>{error}</p>}
-        <div className='row row-cols-1 row-cols-sm-2 row-cols-md-3 '>
-          {
-            articles.filter((articleObj)=>articleObj.isArticleActive===true).map((articleObj) => <div className='col' key={articleObj.articleId}>
+      {error && <p className='display-4 text-center mt-5 text-danger'>{error}</p>}
+
+      <div className='filter-bar'>
+        <input
+          type="text"
+          placeholder="Filter by title..."
+          value={filter}
+          onChange={handleFilterChange}
+          className="form-control d-block mb-5 mx-auto bg-"
+        />
+        <FaSearch  className='search-icon'/>
+      </div>
+
+      {filteredArticles.length === 0 ? (
+        <p className="text-center mt-4 text-muted">No articles found.</p>
+      ) : (
+        <div className='row row-cols-1 row-cols-sm-2 row-cols-md-3'>
+          {filteredArticles.map((article) => (
+            <div className='col' key={article.articleId}>
               <div className="card h-100">
                 <div className="card-body">
-                {/* author image  */}
+                  {/* Author Details */}
                   <div className="author-details text-end">
-                    <img src={articleObj.authorData.profileImageUrl}
+                    <img
+                      src={article.authorData.profileImageUrl}
                       width='40px'
                       className='rounded-circle'
-                      alt="" />
-                    {/* author name */}
-                    <p>
-                      <small className='text-secondary'>
-                        {articleObj.authorData.nameOfAuthor}
-                      </small>
-                    </p>
+                      alt="Author"
+                    />
+                    <p><small className='text-secondary'>{article.authorData.nameOfAuthor}</small></p>
                   </div>
-                  {/* article title */}
-                  <h5 className='card-title'>{articleObj.title}</h5>
-                  {/* article content upadto 80 chars */}
-                  <p className='card-text'>
-                    {articleObj.content.substring(0, 80) + "...."}
-                  </p>
-                  {/* read more button */}
-                  <button className='custom-btn btn-4' onClick={()=>gotoArticleById(articleObj)}>
+
+                  {/* Article Title */}
+                  <h5 className='card-title'>{article.title}</h5>
+
+                  {/* Article Content */}
+                  <p className='card-text'>{article.content.substring(0, 80) + "..."}</p>
+
+                  {/* Read More Button */}
+                  <button className='custom-btn btn-4' onClick={() => navigate(`../${article.articleId}`, { state: article })}>
                     Read more
                   </button>
                 </div>
+
                 <div className="card-footer">
-                {/* article's date of modification */}
-                  <small className="text-body-secondary">
-                    Last updated on {articleObj.dateOfModification}
-                  </small>
+                  <small className="text-body-secondary">Last updated on {article.dateOfModification}</small>
                 </div>
               </div>
             </div>
-            )
-          }
+          ))}
         </div>
-      </div>
+      )}
     </div>
-  )
+  );
 }
 
-export default Articles
+export default Articles;

@@ -297,3 +297,18 @@ body {
     display: block;
     border-bottom: 1px solid #1bbc9b;
 }
+
+.filter-bar{
+    position: relative;
+    display: flex;
+}
+
+.filter-bar .search-icon{
+    position: absolute;
+    left: 63%;
+    top:12%
+}
+
+.filter-bar input{
+    width: 30%;
+}
