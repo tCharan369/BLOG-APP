@@ -3,6 +3,7 @@ import { userAuthorContextObj } from '../../contexts/UserAuthorContext'
 import { useUser } from '@clerk/clerk-react'
 import axios from 'axios'
 import { useNavigate } from 'react-router-dom'
+import pic from '../../assets/home-pic.jpeg'
 
 function Home() {
   const { currentUser, setCurrentUser } = useContext(userAuthorContextObj)
@@ -102,10 +103,11 @@ function Home() {
     <div className='container'>
       {
         isSignedIn === false && <div>
-          <p className="lead">Lorem ipsum dolor, sit amet consectetur adipisicing elit. Veniam neque consequatur nemo, enim expedita alias nobis iste obcaecati, eum dolor deserunt voluptatum odio aperiam, officiis sequi voluptates molestias atque sint?</p>
-          <p className="lead">Lorem ipsum dolor, sit amet consectetur adipisicing elit. Veniam neque consequatur nemo, enim expedita alias nobis iste obcaecati, eum dolor deserunt voluptatum odio aperiam, officiis sequi voluptates molestias atque sint?</p>
-          <p className="lead">Lorem ipsum dolor, sit amet consectetur adipisicing elit. Veniam neque consequatur nemo, enim expedita alias nobis iste obcaecati, eum dolor deserunt voluptatum odio aperiam, officiis sequi voluptates molestias atque sint?</p>
-
+          <h1 className="display-4 fw-bold text-primary text-center mb-5">Welcome to the Blog App</h1>
+          <p className="text-muted fs-5 text-center">
+          Explore insightful articles, share your knowledge, and engage with a community of writers and readers. 
+          </p>
+          <img src={pic} alt="home-pic" width='1000px' className='d-block mx-auto mt-5'/>
         </div>
       }
 
