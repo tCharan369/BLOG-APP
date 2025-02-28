@@ -12,7 +12,12 @@ import AuthorProfile from './components/author/AuthorProfile.jsx';
 import Articles from './components/common/Articles.jsx';
 import ArticleByID from './components/common/ArticleByID.jsx';
 import PostArticle from './components/author/PostArticle.jsx';
+import AdminProfile from './components/admin/AdminProfile.jsx';
+import Active from './components/admin/Active.jsx'
+import Inactive from './components/admin/Inactive.jsx'
 import UserAuthorContext from './contexts/UserAuthorContext.jsx';
+import AllUsersContext from './contexts/AllUsersContext.jsx';
+
 
 
 const browserRouterObj = createBrowserRouter([
@@ -71,6 +76,24 @@ const browserRouterObj = createBrowserRouter([
             element: <Navigate to="articles" />
           }
         ]
+      },
+      {
+        path:"admin-profile/:email",
+        element:<AdminProfile />,
+        children:[
+          {
+            path:'active',
+            element:<Active />
+          },
+          {
+            path:'inactive',
+            element:<Inactive />
+          },
+          {
+            path: "",
+            element: <Navigate to="active" />
+          }
+        ]
       }
     ]
   }
@@ -84,10 +107,11 @@ const browserRouterObj = createBrowserRouter([
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <UserAuthorContext>
+      <AllUsersContext>
       <RouterProvider router={browserRouterObj} future={{
         v7_startTransition: true,
       }} />
+      </AllUsersContext>
     </UserAuthorContext>
-
   </StrictMode>,
 )

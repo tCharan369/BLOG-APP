@@ -50,6 +50,19 @@ function Home() {
           setError(message);
         }
       }
+      if (selectedRole === 'admin') {
+        console.log(currentUser)
+        res = await axios.post('http://localhost:3000/admin-api/admin', currentUser)
+        let { message, payload } = res.data;
+        console.log(message)
+        if (message === 'admin') {
+          setCurrentUser({ ...currentUser, ...payload })
+           //save user to localstorage
+           localStorage.setItem("currentuser",JSON.stringify(payload))
+        } else {
+          setError(message);
+        }
+      }
     } catch (err) {
       setError(err.message);
     }
@@ -78,6 +91,9 @@ function Home() {
     if (currentUser?.role === "author" && error.length === 0) {
       console.log("first")
       navigate(`/author-profile/${currentUser.email}`);
+    }
+    if(currentUser?.role==='admin' && error.length===0){
+      navigate(`/admin-profile/${currentUser.email}`)
     }
   }, [currentUser]);
 
@@ -116,9 +132,13 @@ function Home() {
               <input type="radio" name="role" id="author" value="author" className="form-check-input" onChange={onSelectRole} />
               <label htmlFor="author" className="form-check-label">Author</label>
             </div>
-            <div className="form-check">
+            <div className="form-check me-4">
               <input type="radio" name="role" id="user" value="user" className="form-check-input" onChange={onSelectRole} />
               <label htmlFor="user" className="form-check-label">User</label>
+            </div>
+            <div className="form-check">
+              <input type="radio" name="role" id="admin" value="admin" className="form-check-input" onChange={onSelectRole} />
+              <label htmlFor="admin" className="form-check-label">Admin</label>
             </div>
           </div>
         </div>

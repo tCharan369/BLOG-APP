@@ -113,3 +113,23 @@ Content-Type: application/json
     "isArticleActive":true,
     "comments":[]
 }
+
+### GET all admins
+GET http://localhost:3000/admin-api/admins
+
+### CREATE Admin
+POST http://localhost:3000/admin-api/admin
+Content-Type: application/json
+
+{
+  "role": "admin",
+  "firstName": "admin1",
+  "lastName": "admin1",
+  "email": "admin1@gmail.com",
+  "profileImageUrl": "admin1 image",
+  "isActive": true
+}
+
+
+### GET all users of application
+GET http://localhost:3000/admin-api/allUsers

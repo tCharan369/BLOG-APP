@@ -5,6 +5,7 @@ const mongoose = require('mongoose')
 const userApp = require('./API/userApi')
 const adminApp = require('./API/adminApi')
 const authorApp = require('./API/authorApi')
+
 const cors = require('cors');
 app.use(cors());
 
